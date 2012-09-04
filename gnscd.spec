@@ -18,7 +18,8 @@ Source1:	nscd.init
 Source2:	nscd.sysconfig
 Source3:	nscd.logrotate
 Source4:	nscd.conf
-Source6:	nscd.tmpfiles
+Source5:	nscd.tmpfiles
+Source6:	get-source.sh
 URL:		https://code.google.com/p/gnscd/
 BuildRequires:	sed >= 4.0
 Provides:	group(nscd)
@@ -74,7 +75,7 @@ echo '.so man8/nscd.8' >  $RPM_BUILD_ROOT%{_mandir}/man8/nscd.8
 cp -p %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/nscd
 cp -p %{SOURCE3} $RPM_BUILD_ROOT/etc/logrotate.d/nscd
 cp -p %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}
-cp -p %{SOURCE6} $RPM_BUILD_ROOT%{systemdtmpfilesdir}/nscd.conf
+cp -p %{SOURCE5} $RPM_BUILD_ROOT%{systemdtmpfilesdir}/nscd.conf
 : > $RPM_BUILD_ROOT/var/log/nscd
 
 %clean
