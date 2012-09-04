@@ -31,7 +31,7 @@ Requires(pre):	/bin/id
 Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
-Requires:	rc-scripts >= 0.2.0
+Requires:	rc-scripts >= 0.4.1.26
 Provides:	user(nscd)
 Obsoletes:	nscd
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
