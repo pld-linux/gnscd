@@ -1,0 +1,100 @@
+#!/bin/sh
+#
+# nscd:		Starts the Name Switch Cache Daemon
+#
+# chkconfig:	345 30 80
+# description:	This is a daemon which handles passwd and group lookups \
+#		for running programs and cache the results for the next \
+#		query. You should start this daemon only if you use \
+#		slow Services like NIS or NIS+
+# processname:	nscd
+# config:	/etc/nscd.conf
+#
+
+# Sanity checks.
+[ -f /etc/nscd.conf ] || exit 0
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+# Get sysconfig
+[ -f /etc/sysconfig/nscd ] && . /etc/sysconfig/nscd
+
+start() {
+	if [ ! -f /var/lock/subsys/nscd ]; then
+		msg_starting "Name Switch Cache Daemon"
+		daemon /usr/sbin/nscd
+		RETVAL=$?
+		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/nscd
+	else
+		msg_already_running "Name Switch Cache Daemon"
+	fi
+}
+
+stop() {
+	if [ -f /var/lock/subsys/nscd ]; then
+		msg_stopping "Name Switch Cache Daemon"
+		busy
+		/usr/sbin/nscd -K >/dev/null
+		rm -f /var/lock/subsys/nscd >/dev/null 2>&1
+		ok
+	else
+		msg_not_running "Name Switch Cache Daemon"
+	fi
+}
+
+condrestart() {
+	if [ -f /var/lock/subsys/nscd ]; then
+		stop
+		start
+	else
+		msg_not_running "Name Switch Cache Daemon"
+		RETVAL=$1
+	fi
+}
+
+# return true if service is considered "up"
+# otherwise lockfile in subsys must exist
+is_service_up() {
+	[ -f /var/lock/subsys/"$1" ]
+}
+
+RETVAL=0
+# See how we were called.
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+	stop
+	;;
+  restart)
+	stop
+	start
+	;;
+  try-restart)
+	condrestart 0
+	;;
+  force-reload)
+	condrestart 7
+	;;
+  reload)
+	if is_service_up nscd; then
+		for db in passwd group hosts; do
+			show "Invalidating %s cache" $db; busy
+			nscd -i $db >/dev/null && ok || fail
+		done
+	else
+		msg_not_running "Name Switch Cache Daemon"
+	fi
+	;;
+  status)
+	status nscd
+	exit $?
+	;;
+  *)
+	msg_usage "$0 {start|stop|restart|try-restart|reload|force-reload|status}"
+	exit 3
+esac
+
+exit $RETVAL

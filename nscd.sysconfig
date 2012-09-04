@@ -1,0 +1,4 @@
+# Customized settings for nscd
+
+# Define nice level for nscd
+SERVICE_RUN_NICE_LEVEL="+0"
