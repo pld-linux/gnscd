@@ -24,6 +24,7 @@ Source4:	nscd.conf
 Source5:	nscd.tmpfiles
 Source6:	get-source.sh
 URL:		https://code.google.com/p/gnscd/
+BuildRequires:	rpmbuild(macros) >= 1.644
 BuildRequires:	sed >= 4.0
 Provides:	group(nscd)
 Requires(post):	fileutils
@@ -37,6 +38,7 @@ Requires(pre):	/usr/sbin/useradd
 Requires:	rc-scripts >= 0.4.1.26
 Provides:	user(nscd)
 Obsoletes:	nscd
+Obsoletes:	unscd
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 # glibc private symbols
