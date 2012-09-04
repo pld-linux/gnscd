@@ -1,3 +1,6 @@
+# NOTE
+# - works in glibc 2.3, but apparently up to version where format changed,
+#   2.16.0 definately segfaults on both x86_64/i686
 # TODO
 # - x86_64 warning is important?
 #  thread.c: In function 'handle_client_thread':
